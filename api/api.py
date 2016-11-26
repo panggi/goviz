@@ -1,6 +1,9 @@
 import tornado
 from tornado_json.requesthandlers import APIHandler
 from tornado_json import schema
+from aggregate import Agg
+
+agg = Agg()
 
 class Points(APIHandler):
 
@@ -49,9 +52,10 @@ class Points(APIHandler):
         * `n_items`: how many max points returned
         """
         tornado.log.enable_pretty_logging()
+
         return {
             # "points": [[self.body["lat_from"]]]
-            "points": [[-6.2303955, 106.8480445, 2000],[-6.2303955, 106.8480445, 2000]]
+            "points": agg.aggregate(self.body)
         }
 
     def set_default_headers(self):
