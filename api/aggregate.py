@@ -42,13 +42,13 @@ class Agg:
                 (self.data.longOrigin < long1)].copy()
 
         # compare each location to a grid and calc which cell it's closest to
-        x = np.abs(np.subtract.outer(df.latOrigin.values,
-            np.linspace(df.latOrigin.min(), df.latOrigin.max(), cell)))
-        y = np.abs(np.subtract.outer(df.longOrigin.values,
-            np.linspace(df.longOrigin.min(), df.longOrigin.max(), cell)))
+        x = np.linspace(df.latOrigin.min(), df.latOrigin.max(), cell)
+        y = np.linspace(df.longOrigin.min(), df.longOrigin.max(), cell)
+        dx = np.abs(np.subtract.outer(df.latOrigin.values, x))
+        dy = np.abs(np.subtract.outer(df.longOrigin.values, y))
 
-        df['x'] = x.argmin(axis=-1)
-        df['y'] = y.argmin(axis=-1)
+        df['x'] = x[dx.argmin(axis=-1)]
+        df['y'] = y[dy.argmin(axis=-1)]
 
         count = df.groupby(['x','y']).latOrigin.count()
         count[:] = count.astype(float)/count.max()
