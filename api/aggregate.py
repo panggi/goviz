@@ -51,6 +51,6 @@ class Agg:
         df['y'] = y[dy.argmin(axis=-1)]
 
         count = df.groupby(['x','y']).latOrigin.count()
-        count[:] = np.sqrt(count.astype(float)/count.max())
+        count[:] = (count.astype(float)/count.max())**(1./3)
         return [[k[0], k[1], v] for k, v in count.iteritems()]
 
