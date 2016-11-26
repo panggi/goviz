@@ -9,7 +9,7 @@ class Agg:
     def __init__(self):
         gojek = MongoClient().gojek
         self.data = pd.DataFrame(
-                [c for c in gojek[collection].find({}, {
+                [c for c in gojek.clean.find({}, {
                     '_id': 0,
                     'cancelTime': 1,
                     'dispatchTime': 1,

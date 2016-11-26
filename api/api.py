@@ -1,7 +1,7 @@
 import tornado
 from tornado_json.requesthandlers import APIHandler
 from tornado_json import schema
-from aggregate import Agg
+from api.aggregate import Agg
 
 agg = Agg()
 
