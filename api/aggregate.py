@@ -23,34 +23,32 @@ class Agg:
         self.data.dropna(how='any', inplace=True)
 
     def aggregate(self, req):
-        lat0 = req['lat_from']
-        long0 = req['long_from']
-        lat1 = req['lat_to']
-        long1 = req['long_to']
-        time0 = req['time_from']
-        time1 = req['time_to']
+        lat_from = req['lat_from']
+        long_from = req['long_from']
+        lat_to = req['lat_to']
+        long_to = req['long_to']
+        time_from = req['time_from']
+        time_to = req['time_to']
         cell = req['n_items']**0.5
 
         day = datetime(2015,11,23)
-        start = day + timedelta(hours=time0)
-        end = day + timedelta(hours=time1)
-        df = self.data[(self.data.idTime > start) &
+        start = day + timedelta(hours=time_from)
+        end = day + timedelta(hours=time_to)
+        df = self.data.loc[(self.data.idTime > start) &
                 (self.data.idTime < end) &
-                (self.data.latOrigin > lat0) &
-                (self.data.latOrigin < lat1) &
-                (self.data.longOrigin > long0) &
-                (self.data.longOrigin < long1)].copy()
+                (self.data.latOrigin > lat_from) &
+                (self.data.latOrigin < lat_to) &
+                (self.data.longOrigin > long_from) &
+                (self.data.longOrigin < long_to),
+                ['latOrigin', 'longOrigin']]
 
         # compare each location to a grid and calc which cell it's closest to
-        x = np.linspace(df.latOrigin.min(), df.latOrigin.max(), cell)
-        y = np.linspace(df.longOrigin.min(), df.longOrigin.max(), cell)
-        dx = np.abs(np.subtract.outer(df.latOrigin.values, x))
-        dy = np.abs(np.subtract.outer(df.longOrigin.values, y))
+        x = np.linspace(lat_from, lat_to, cell)
+        y = np.linspace(long_from, long_to, cell)
+        dx = x[np.abs(np.subtract.outer(df.latOrigin, x)).argmin(axis=-1)]
+        dy = y[np.abs(np.subtract.outer(df.longOrigin, y)).argmin(axis=-1)]
 
-        df['x'] = x[dx.argmin(axis=-1)]
-        df['y'] = y[dy.argmin(axis=-1)]
-
-        count = df.groupby(['x','y']).latOrigin.count()
-        count[:] = (count.astype(float)/count.max())**0.2
+        count = df.groupby([dx, dy]).latOrigin.count()
+        count[:] = (count.astype(float)/count.max())**0.5
         return [[k[0], k[1], v] for k, v in count.iteritems()]
 
