@@ -39,16 +39,13 @@ class Agg:
                 (self.data.latOrigin > lat_from) &
                 (self.data.latOrigin < lat_to) &
                 (self.data.longOrigin > long_from) &
-                (self.data.longOrigin < long_to),
-                ['latOrigin', 'longOrigin']]
+                (self.data.longOrigin < long_to)]
 
-        # compare each location to a grid and calc which cell it's closest to
-        x = np.linspace(lat_from, lat_to, cell)
-        y = np.linspace(long_from, long_to, cell)
-        dx = x[np.abs(np.subtract.outer(df.latOrigin, x)).argmin(axis=-1)]
-        dy = y[np.abs(np.subtract.outer(df.longOrigin, y)).argmin(axis=-1)]
+        hist, x, y = np.histogram2d(x=df.latOrigin, y=df.longOrigin,
+                bins=[np.linspace(lat_from, lat_to, cell),
+                    np.linspace(long_from, long_to, cell)])
 
-        count = df.groupby([dx, dy]).latOrigin.count()
-        count[:] = (count.astype(float)/count.max())**0.5
-        return [[k[0], k[1], v] for k, v in count.iteritems()]
+        arg = np.argwhere(hist)
+        hist[:] = np.sqrt(hist/hist.max())
+        return np.dstack([x[arg[:,0]], y[arg[:,1]], hist[hist > 0]]).tolist()[0]
 
