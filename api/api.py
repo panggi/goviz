@@ -33,10 +33,14 @@ class Points(APIHandler):
             "type": "object",
             "properties": {
                 "points": {"type": "array", "items": {"type": "array"}}
+                "min": {"type": "number"},
+                "max": {"type": "number"},
             }
         },
         output_example={
-            "points": [[-6.2303955, 106.8480445, 2000],[-6.2303955, 106.8480445, 2000]]
+            "points": [[-6.2303955, 106.8480445, 2000],[-6.2303955, 106.8480445, 2000]],
+            "min": 1,
+            "max": 2335
         },
     )
 
@@ -52,10 +56,11 @@ class Points(APIHandler):
         * `n_items`: how many max points returned
         """
         tornado.log.enable_pretty_logging()
+        points, mn, mx = agg.aggregate(self.body)
 
         return {
             # "points": [[self.body["lat_from"]]]
-            "points": agg.aggregate(self.body)
+            "points": points, "min": mn, "max": mx
         }
 
     def set_default_headers(self):

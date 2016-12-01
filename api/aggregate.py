@@ -1,4 +1,4 @@
-import pandas as pd
+
 import numpy as np
 from pymongo import MongoClient
 from datetime import datetime
@@ -46,6 +46,8 @@ class Agg:
                     np.linspace(long_from, long_to, cell)])
 
         arg = np.argwhere(hist)
-        hist[:] = np.sqrt(hist/hist.max())
-        return np.dstack([x[arg[:,0]], y[arg[:,1]], hist[hist > 0]]).tolist()[0]
+        mn = hist.min()
+        mx = hist.max()
+        hist[:] = np.sqrt(hist/mx)
+        return np.dstack([x[arg[:,0]], y[arg[:,1]], hist[hist > 0]]).tolist()[0], mn, mx
 
