@@ -32,7 +32,7 @@ class Points(APIHandler):
         output_schema={
             "type": "object",
             "properties": {
-                "points": {"type": "array", "items": {"type": "array"}}
+                "points": {"type": "array", "items": {"type": "array"}},
                 "min": {"type": "number"},
                 "max": {"type": "number"},
             }
