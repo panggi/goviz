@@ -1,9 +1,8 @@
-
+import pandas as pd
 import numpy as np
 from pymongo import MongoClient
 from datetime import datetime
 from datetime import timedelta
-import sys
 
 class Agg:
     def __init__(self):
