@@ -45,8 +45,9 @@ class Agg:
                     np.linspace(long_from, long_to, cell)])
 
         arg = np.argwhere(hist)
-        mn = hist.min()
-        mx = hist.max()
+        nz = hist[hist > 0]
+        mn = nz.min()
+        mx = nz.max()
         hist[:] = np.sqrt(hist/mx)
-        return np.dstack([x[arg[:,0]], y[arg[:,1]], hist[hist > 0]]).tolist()[0], mn, mx
+        return np.dstack([x[arg[:,0]], y[arg[:,1]], nz]).tolist()[0], mn, mx
 
