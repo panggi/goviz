@@ -49,5 +49,6 @@ class Agg:
         mn = nz.min()
         mx = nz.max()
         hist[:] = np.sqrt(hist/mx)
+        nz[:] = hist[hist > 0]
         return np.dstack([x[arg[:,0]], y[arg[:,1]], nz]).tolist()[0], mn, mx
 
